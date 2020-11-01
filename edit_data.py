@@ -89,7 +89,7 @@ if server.sismember("topics", old_topic):
     server.sadd("topics", new_topic)
 
     post_ids = server.smembers("POST_IDS")
-    
+
     # Iterate all posts and update topic
     for id in post_ids:
         if server.hget("post:" + str(id.decode()), "topic").decode() == old_topic:

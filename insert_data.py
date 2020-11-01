@@ -99,6 +99,7 @@ with open("data//text.csv") as text_file:
         server.hset("post:" + str(id), "date", x.strftime("%c"))
         server.hset("post:" + str(id), "timestamp", server.time()[0])
 
+
         # Palielina author total posts par vienu
         server.hincrby("author:" + str(author_ID), "total_posts", 1)
 
