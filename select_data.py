@@ -48,6 +48,18 @@ def select_posts_by_topic(topic):
 
     post_ids = server.smembers("POST_IDS")
 
+    topics = server.smembers("topics")
+    exists = False
+    # Check if topic exists
+    for element in topics:
+        if element.decode() == topic:
+            exists = True
+            break
+
+    if exists == False:
+        print("Topic does not exist!")
+        return
+
     # Iterate all posts
     for id in post_ids:
         if server.hget("post:" + str(id.decode()), "topic").decode() == topic:
@@ -132,3 +144,6 @@ def sort_authors_by_posts(count):
 # select_author_by_id(1, show_posts=False)
 # sort_posts_by_creation(10, True)
 # sort_authors_by_posts(10)
+
+
+# TODO: select posts by author_id
