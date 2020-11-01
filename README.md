@@ -3,7 +3,14 @@
 ## Datu bāzes piemērs, kurā attēlota interneta blogu lapa.
 
 ## Dati un to respektīvie redis objekti:
->Person - hash, kas satur pamatinformācija par cilvēku
->Author - hash, kas papildina informāciju par cilvēku. Lietotāja objekts lapā
->Topic - set, kas satur nesakārtotu sarakstu ar iespējamām rakstu tēmām
->Post - hash, kas satur visu informāciju par saglabātajiem rakstiem datu bāzē.
+>_**Person**_ - hash, kas satur pamatinformācija par cilvēku
+
+>_**Author**_ - hash, kas papildina informāciju par cilvēku. Lietotāja objekts lapā
+
+>_**Topic**_ - set, kas satur nesakārtotu sarakstu ar iespējamām rakstu tēmām
+
+>_**Post**_ - hash, kas satur visu informāciju par saglabātajiem rakstiem datu bāzē.
+
+>_**AUTHOR_IDS**_ - Set
+
+>_**POST_IDS**_ Set

@@ -51,7 +51,8 @@ for i in range(0, len(author_ids)):
     server.hset("author:"  + str(i + 1), "password", password)
     server.hset("author:"  + str(i + 1), "total_posts", 0)
 
-
+    # Ievieto Autora ID seta, kas uzglabas eksistejosos autorus
+    server.sadd("AUTHOR_IDS", str(i + 1))
 
 # Izveido "Topics" kopu
 server.sadd("topics", "Technology")
@@ -88,7 +89,7 @@ with open("data//text.csv") as text_file:
         # Izvelas random author
         author_ID = random.randint(1, 50)
 
-        server.hset("post:" + str(id), "blog_ID", str(id))
+        server.hset("post:" + str(id), "post_ID", str(id))
         server.hset("post:" + str(id), "author_ID", str(author_ID))
         server.hset("post:" + str(id), "title", title_list[id - 1])
         server.hset("post:" + str(id), "text", item[0])
@@ -101,5 +102,6 @@ with open("data//text.csv") as text_file:
         # Palielina author total posts par vienu
         server.hincrby("author:" + str(author_ID), "total_posts", 1)
 
-
+        # Ievieto post ID seta, kas uzglabas eksistejosos postus
+        server.sadd("POST_IDS", str(id))
         id += 1
