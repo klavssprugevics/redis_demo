@@ -1,98 +1,116 @@
 import redis
 import random
 
+
+# Savienojas ar DB
 server = redis.Redis(host='localhost', port=6379, db=0)
 
+# =-=-=-=-=-=-= Izmaina post nosaukumu =-=-=-=-=-=-=
+def change_post_title(count):
 
-# =-=-=-=-=-=-= Change post title =-=-=-=-=-=-=
-# Select 15 random post id to change title.
-posts_ID = [random.randint(1, 1500) for i in range(15)]
+    # Izvelas nejausus postus
+    posts_ID = server.srandmember("POST_IDS", count)
+
+    print("=====================================================")
+    print("EDIT#1: CHANGE POST TITLE")
+    print("Titles before: ")
+    print("=====================================================")
+
+    # Postu nosaukumus uzliek visus ar lielo burtu.
+    for post in posts_ID:
+
+        # Iegust pasreizejo nosaukumu
+        title = server.hget("post:" + str(post.decode()), "title")
+
+        # Paskatas vai post eksiste
+        if title == None:
+            continue
+        else:
+            title = title.decode()
+            print(title)
+
+            # Nomaina nosaukumu
+            server.hset("post:" + str(post), "title", title.upper())
+
+            # Atjauno timestamp
+            server.hset("post:" + str(post), "timestamp", server.time()[0])
+
+    print("=====================================================")
+    print("Post IDs: ", end="")
+    print([id for id in posts_ID])
+    print("Titles after: ")
+    print("=====================================================")
+
+    # Parbauda vai izmainiti nosaukumi
+    for post in posts_ID:
+        print(server.hget("post:" + str(post), "title").decode())
 
 
-print("=====================================================")
-print("EDIT#1: CHANGE POST TITLE")
-print("Titles before: ")
-print("=====================================================")
+# =-=-=-=-=-=-= Izmaina autora username =-=-=-=-=-=-=
+def change_author_username(count):
 
-# Set title name to all caps.
-for post in posts_ID:
+    # Izvelas nejausus autorus
+    authors_ID = server.srandmember("AUTHOR_IDS", count)
 
-    title = server.hget("post:" + str(post), "title")
-    print(title)
-    # Check if post exists first.
-    if title == None:
-        continue
+    print("=====================================================")
+    print("EDIT#2: CHANGE USERNAME")
+    print("Usernames before: ")
+    print("=====================================================")
+
+    for author in authors_ID:
+
+        # Panem pasreizejo username
+        username = server.hget("author:" + str(author.decode()), "username")
+
+        # Parbauda vai autors eksiste
+        if username == None:
+            continue
+        else:
+            username = username.decode()
+            print(username)
+
+            # Izmaina username
+            server.hset("author:" + str(author), "username", username.upper())
+
+    print("=====================================================")
+    print("Author IDs: ", end="")
+    print([id for id in authors_ID])
+    print("Usernames after: ")
+    print("=====================================================")
+
+    # Check if username changed.
+    for author in authors_ID:
+        print(server.hget("author:" + str(author), "username").decode())
+
+
+# =-=-=-=-=-=-= Izmaina topic nosaukumu un visus postus, kas pieder sim topic =-=-=-=-=-=-=
+def change_topic_name(old_topic, new_topic):
+
+    print("=====================================================")
+    print("EDIT#3: CHANGE Topic name")
+    print("Old topic name:", old_topic)
+    print("=====================================================")
+
+    # Parbauda vai topic eksiste
+    if server.sismember("topics", old_topic):
+
+        # Izdzes veco
+        server.srem("topics", old_topic)
+
+        # Pievieno jauno
+        server.sadd("topics", new_topic)
+
+        post_ids = server.smembers("POST_IDS")
+
+        # Apskata visus post un nomaina topic, kuriem bija vecais topic
+        for id in post_ids:
+            if server.hget("post:" + str(id.decode()), "topic").decode() == old_topic:
+                server.hset("post:" + str(id.decode()), "topic", new_topic)
+
     else:
-        title = title.decode()
-        server.hset("post:" + str(post), "title", title.upper())
-
-        # Update timestamp
-        server.hset("post:" + str(post), "timestamp", server.time()[0])
-
-print("=====================================================")
-print("Post IDs: ", end="")
-print([id for id in posts_ID])
-print("Titles after: ")
-print("=====================================================")
-
-# Check if title changed.
-for post in posts_ID:
-    print(server.hget("post:" + str(post), "title"))
+        print("Topic doesn't exist")
 
 
-# =-=-=-=-=-=-= Change username =-=-=-=-=-=-=
-# Select 15 random author ids to change username.
-authors_ID = [random.randint(1, 100) for i in range(15)]
-
-print("=====================================================")
-print("EDIT#2: CHANGE USERNAME")
-print("Usernames before: ")
-print("=====================================================")
-for author in authors_ID:
-
-    username = server.hget("author:" + str(author), "username")
-    # Check if user exists first.
-    if username == None:
-        continue
-    else:
-        username = username.decode()
-        server.hset("author:" + str(author), "username", username.upper())
-
-print("=====================================================")
-print("Author IDs: ", end="")
-print([id for id in authors_ID])
-print("usernames after: ")
-print("=====================================================")
-
-# Check if username changed.
-for author in authors_ID:
-    print(server.hget("author:" + str(author), "username"))
-
-
-# =-=-=-=-=-=-= Change topic name and corresponding post titles =-=-=-=-=-=-=
-
-old_topic = "Sports"
-print("=====================================================")
-print("EDIT3: CHANGE Topic name")
-print("Old topic name:", old_topic)
-print("=====================================================")
-
-# Check if topic exists
-if server.sismember("topics", old_topic):
-    new_topic = old_topic + " and Fitness"
-
-    # Delete old topic
-    server.srem("topics", old_topic)
-
-    # Add new topic
-    server.sadd("topics", new_topic)
-
-    post_ids = server.smembers("POST_IDS")
-
-    # Iterate all posts and update topic
-    for id in post_ids:
-        if server.hget("post:" + str(id.decode()), "topic").decode() == old_topic:
-            server.hset("post:" + str(id.decode()), "topic", new_topic)
-
-else:
-    print("Topic doesn't exist")
+change_post_title(10)
+change_author_username(10)
+change_topic_name("Sports", "Sports and Fitness")
