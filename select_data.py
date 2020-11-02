@@ -5,8 +5,10 @@ server = redis.Redis(host='localhost', port=6379, db=0)
 def select_author_by_id(author_id, show_posts=False):
 
     author_id = str(author_id)
+    author_ids = server.smembers("AUTHOR_IDS")
+
     # Parbauda vai user eksiste
-    if server.hget("author:" + str(author_id), "username") == None:
+    if author_id.encode() not in author_ids:
         print("Author does not exist")
         return
 
@@ -15,7 +17,6 @@ def select_author_by_id(author_id, show_posts=False):
     total_posts = server.hget("author:" + str(author_id), "total_posts").decode()
 
     # Panem info no persona hash
-
     person_id = server.hget("author:" + str(author_id), "person_ID").decode()
     person_name = server.hget("person:" + str(person_id), "name").decode()
     person_surname = server.hget("person:" + str(person_id), "surname").decode()
@@ -141,7 +142,7 @@ def sort_authors_by_posts(count):
 
 
 # select_posts_by_topic("Politics")
-# select_author_by_id(1, show_posts=False)
+select_author_by_id(1, show_posts=False)
 # sort_posts_by_creation(10, True)
 # sort_authors_by_posts(10)
 

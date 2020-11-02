@@ -51,7 +51,6 @@ print("=====================================================")
 for author in authors_ID:
 
     username = server.hget("author:" + str(author), "username")
-    print(username)
     # Check if user exists first.
     if username == None:
         continue
