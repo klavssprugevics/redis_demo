@@ -147,6 +147,6 @@ def sort_authors_by_posts(count):
 
 
 select_author_by_id(3, show_posts=True)
-# select_posts_by_topic("Politics")
+# select_posts_by_topic("Sports")
 # sort_posts_by_creation(3, True)
 # sort_authors_by_posts(10)
