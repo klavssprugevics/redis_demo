@@ -1,16 +1,35 @@
 # Redis datu bāzes tests
 
-## Datu bāzes piemērs, kurā attēlota interneta blogu lapa.
+Datu bāzes piemērs, kurā attēlota interneta blogu lapa.
 
 ## Dati un to respektīvie redis objekti:
->_**Person**_ - hash, kas satur pamatinformācija par cilvēku
+>_**Person**_ - hash. Pamatinformācija par cilvēku:
 
->_**Author**_ - hash, kas papildina informāciju par cilvēku. Lietotāja objekts lapā
+name
+surname
+age
+phone
 
->_**Topic**_ - set, kas satur nesakārtotu sarakstu ar iespējamām rakstu tēmām
+>_**Author**_ - hash. Papildina Person. Autora informācija:
 
->_**Post**_ - hash, kas satur visu informāciju par saglabātajiem rakstiem datu bāzē.
+author_ID
+person_ID
+username
+password
+total_posts
 
->_**AUTHOR_IDS**_ - Set
+>_**AUTHOR_IDS**_ - set. Kopa, kas satur eksistejoso autoru indeksus
 
->_**POST_IDS**_ Set
+>_**Topic**_ - set. Kopa, kas satur nesakārtotu sarakstu ar iespējamām rakstu tēmām
+
+>_**Post**_ - hash. Satur visu informāciju par saglabātajiem rakstiem:
+
+post_ID
+author_ID
+title
+text
+topic
+date
+timestamp
+
+>_**POST_IDS**_ - set. Kopa, kas satur eksistejoso postu indeksus
