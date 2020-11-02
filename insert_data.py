@@ -102,7 +102,7 @@ def insert_post_hash():
         for item in text:
 
             # Izvelas random author
-            author_ID = server.srandmember("AUTHOR_IDS")
+            author_ID = server.srandmember("AUTHOR_IDS").decode()
 
             # Ievieto info "post" hash
             server.hset("post:" + str(id), "post_ID", str(id))
